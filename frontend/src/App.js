@@ -4,15 +4,21 @@ import axios from "axios";
 function App() {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const search = async () => {
+    if (!query.trim()) return;
+
     try {
+      setLoading(true);
       const res = await axios.get(
         `https://intelligent-code-search-engine.onrender.com/search?q=${query}`,
       );
       setResults(res.data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -29,6 +35,7 @@ function App() {
           placeholder="Search code..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && search()}
           style={{
             width: "400px",
             padding: "12px",
@@ -54,6 +61,14 @@ function App() {
         </button>
       </div>
 
+      {/* Loading */}
+      {loading && <p style={{ marginTop: "20px" }}>Loading...</p>}
+
+      {/* No Results */}
+      {!loading && results.length === 0 && query && (
+        <p style={{ marginTop: "20px", color: "gray" }}>No results found</p>
+      )}
+
       {/* Results */}
       <div
         style={{
@@ -71,18 +86,51 @@ function App() {
               marginBottom: "20px",
               borderRadius: "10px",
               boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+              position: "relative",
             }}
           >
             <h2 style={{ color: "#1a0dab" }}>{item.title}</h2>
+
             <p>
               <b>Language:</b> {item.language}
             </p>
-            <pre style={{ background: "#f6f8fa", padding: "10px" }}>
+
+            {/* Copy Button */}
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(item.code);
+                alert("Code copied!");
+              }}
+              style={{
+                position: "absolute",
+                right: "15px",
+                top: "15px",
+                padding: "5px 10px",
+                cursor: "pointer",
+                borderRadius: "5px",
+                border: "none",
+                background: "#28a745",
+                color: "white",
+              }}
+            >
+              Copy
+            </button>
+
+            <pre
+              style={{
+                background: "#f6f8fa",
+                padding: "10px",
+                overflowX: "auto",
+              }}
+            >
               {item.code}
             </pre>
           </div>
         ))}
       </div>
+
+      {/* Footer */}
+      <p style={{ marginTop: "50px", color: "gray" }}>Built by Vipul 🚀</p>
     </div>
   );
 }

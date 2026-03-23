@@ -17,3 +17,6 @@ A mini Google-like search engine for programming code snippets.
 ## How to Run
 1. Start backend: node server.js
 2. Start frontend: npm start
+
+## 🌐 Live Demo
+👉 https://intelligent-code-search-engine.vercel.app/

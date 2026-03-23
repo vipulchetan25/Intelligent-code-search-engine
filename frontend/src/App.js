@@ -7,7 +7,9 @@ function App() {
 
   const search = async () => {
     try {
-      const res = await axios.get(`http://localhost:5000/search?q=${query}`);
+      const res = await axios.get(
+        `https://intelligent-code-search-engine.onrender.com/search?q=${query}`,
+      );
       setResults(res.data);
     } catch (err) {
       console.error(err);
